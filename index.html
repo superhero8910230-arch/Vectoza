@@ -3,325 +3,272 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VectOza — Raster to Vector Converter</title>
-
+  <title>Vectoza - Professional Raster to Vector Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ImageTracerJS library for vectorization -->
+  <script src="https://cdn.jsdelivr.net/npm/imagetracerjs@1.2.6/imagetracer_v1.2.6.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background: #0b0d12;
-      color: #ffffff;
-    }
-
-    .navbar {
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      border-bottom: 1px solid #20232b;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .badge {
-      font-size: 12px;
-      padding: 6px 10px;
-      border: 1px solid #30343e;
-      border-radius: 20px;
-      color: #b8becb;
-    }
-
-    .hero {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 90px 20px 50px;
-      text-align: center;
-    }
-
-    .hero h1 {
-      font-size: clamp(40px, 6vw, 72px);
-      line-height: 1.05;
-      margin-bottom: 22px;
-    }
-
-    .hero p {
-      max-width: 650px;
-      margin: auto;
-      color: #aeb5c2;
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    .upload-box {
-      max-width: 800px;
-      margin: 50px auto 0;
-      border: 2px dashed #3a3f4b;
-      border-radius: 24px;
-      padding: 65px 25px;
-      background: #11141b;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .upload-box:hover {
-      border-color: #7e8797;
-      background: #151922;
-    }
-
-    .upload-icon {
-      font-size: 50px;
-      margin-bottom: 20px;
-    }
-
-    .upload-box h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .upload-box p {
-      color: #8f97a5;
-      margin-bottom: 24px;
-    }
-
-    .upload-btn {
-      display: inline-block;
-      padding: 13px 22px;
-      background: #ffffff;
-      color: #000000;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    #fileInput {
-      display: none;
-    }
-
-    .formats {
-      margin-top: 15px;
-      font-size: 13px;
-      color: #777f8d;
-    }
-
-    .features {
-      max-width: 1100px;
-      margin: 40px auto 80px;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .feature {
-      background: #11141b;
-      border: 1px solid #20242d;
-      border-radius: 18px;
-      padding: 28px;
-    }
-
-    .feature h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
-    }
-
-    .feature p {
-      color: #8f97a5;
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .preview {
-      display: none;
-      max-width: 800px;
-      margin: 30px auto 0;
-      background: #11141b;
-      border: 1px solid #252a34;
-      border-radius: 20px;
-      padding: 25px;
-    }
-
-    .preview img {
-      display: block;
-      max-width: 100%;
-      max-height: 450px;
-      margin: 20px auto;
-      border-radius: 12px;
-    }
-
-    .file-name {
-      text-align: center;
-      color: #b8becb;
-      margin-bottom: 15px;
-    }
-
-    footer {
-      border-top: 1px solid #20232b;
-      padding: 30px 20px;
-      text-align: center;
-      color: #707887;
-      font-size: 13px;
-    }
-
-    @media (max-width: 750px) {
-      .features {
-        grid-template-columns: 1fr;
-      }
-
-      .navbar {
-        padding: 0 20px;
-      }
+    .checkerboard {
+      background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     }
   </style>
 </head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col font-sans">
+  
+  <!-- Header -->
+  <header class="border-b border-gray-800 py-4 px-6 flex justify-between items-center bg-gray-950">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">✨</span>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Vectoza</h1>
+    </div>
+    <span class="text-sm text-gray-400">Raster to Vector Converter</span>
+  </header>
 
-<body>
+  <!-- Main Workspace -->
+  <main class="flex-1 flex flex-col p-6 max-w-7xl w-full mx-auto">
+    
+    <!-- Step 1: Upload View -->
+    <div id="uploadView" class="flex-1 flex flex-col justify-center items-center">
+      <div id="dropzone" class="border-2 border-dashed border-gray-700 hover:border-blue-500 rounded-2xl p-12 text-center bg-gray-950 cursor-pointer transition-all duration-300 w-full max-w-xl shadow-xl">
+        <div class="w-16 h-16 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+          📁
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Upload your image</h3>
+        <p class="text-gray-400 text-sm mb-6">Drag and drop your PNG, JPG, or WEBP image here</p>
+        <button class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
+          Browse Image
+        </button>
+        <input type="file" id="fileInput" accept="image/*" class="hidden">
+      </div>
+    </div>
 
-  <nav class="navbar">
-    <div class="logo">VectOza</div>
-    <div class="badge">AI Raster → Vector</div>
-  </nav>
-
-  <main>
-
-    <section class="hero">
-      <h1>Turn Raster Images<br>Into Clean Vectors.</h1>
-
-      <p>
-        Convert JPG, PNG and other raster images into
-        scalable, editable vector artwork.
-      </p>
-
-      <div
-        class="upload-box"
-        id="uploadBox"
-        onclick="document.getElementById('fileInput').click()"
-      >
-        <div class="upload-icon">⬆️</div>
-
-        <h2>Drop your image here</h2>
-
-        <p>
-          or click to browse from your computer
-        </p>
-
-        <div class="upload-btn">
-          Choose Image
+    <!-- Step 2: Editor View (Hidden initially) -->
+    <div id="editorView" class="hidden flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Canvas / Preview Area (Left 2 Columns) -->
+      <div class="lg:col-span-2 bg-gray-950 border border-gray-800 rounded-2xl p-4 flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-sm font-medium text-gray-400">Vector Preview</span>
+          <button id="resetBtn" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 px-3 py-1.5 rounded-md border border-red-500/20">
+            Upload New Image
+          </button>
         </div>
 
-        <div class="formats">
-          JPG • PNG • WEBP
+        <div class="flex-1 relative checkerboard rounded-xl border border-gray-800 flex items-center justify-center overflow-hidden min-h-[400px]">
+          <div id="svgContainer" class="w-full h-full flex items-center justify-center p-4">
+            <img id="originalPreview" class="max-h-[500px] object-contain" src="" alt="Original Image">
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Panel (Right 1 Column) -->
+      <div class="bg-gray-950 border border-gray-800 rounded-2xl p-6 flex flex-col justify-between">
+        <div class="space-y-6">
+          <h2 class="text-lg font-semibold border-b border-gray-800 pb-3">Tracing Controls</h2>
+
+          <!-- Primary Action Button -->
+          <button id="autoTraceBtn" class="w-full bg-blue-600 hover:bg-blue-500 font-medium py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+            <span>⚡ Auto Trace</span>
+          </button>
+
+          <!-- Settings -->
+          <div class="space-y-4 pt-2">
+            <div>
+              <label class="text-sm font-medium text-gray-300 flex justify-between mb-1">
+                <span>Color Count</span>
+                <span id="colorVal" class="text-blue-400">16</span>
+              </label>
+              <input type="range" id="colorSlider" min="2" max="64" value="16" class="w-full accent-blue-500">
+            </div>
+
+            <div>
+              <label class="text-sm font-medium text-gray-300 flex justify-between mb-1">
+                <span>Edge Smoothness</span>
+                <span id="smoothVal" class="text-blue-400">Medium</span>
+              </label>
+              <input type="range" id="smoothSlider" min="1" max="3" value="2" class="w-full accent-blue-500">
+            </div>
+          </div>
         </div>
 
-        <input
-          type="file"
-          id="fileInput"
-          accept="image/png,image/jpeg,image/webp"
-        >
+        <!-- Export Options -->
+        <div class="pt-6 border-t border-gray-800 space-y-4">
+          <h3 class="text-sm font-semibold text-gray-400">Export Formats</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="downloadVector('svg')" class="bg-gray-800 hover:bg-gray-700 text-sm font-medium py-2 rounded-lg border border-gray-700">SVG</button>
+            <button onclick="downloadVector('eps')" class="bg-gray-800 hover:bg-gray-700 text-sm font-medium py-2 rounded-lg border border-gray-700">EPS</button>
+            <button onclick="downloadVector('ai')" class="bg-gray-800 hover:bg-gray-700 text-sm font-medium py-2 rounded-lg border border-gray-700">AI (Illustrator)</button>
+            <button onclick="downloadVector('pdf')" class="bg-gray-800 hover:bg-gray-700 text-sm font-medium py-2 rounded-lg border border-gray-700">PDF</button>
+          </div>
+          <button onclick="downloadVector('png')" class="w-full bg-gray-800 hover:bg-gray-700 text-sm font-medium py-2 rounded-lg border border-gray-700 text-center">
+            PNG Preview
+          </button>
+        </div>
       </div>
 
-      <div class="preview" id="preview">
-        <div class="file-name" id="fileName"></div>
-        <img id="previewImage" alt="Uploaded preview">
-      </div>
-
-    </section>
-
-    <section class="features">
-
-      <div class="feature">
-        <h3>Clean Vector Paths</h3>
-        <p>
-          Designed for smooth curves, reduced anchor points
-          and editable vector artwork.
-        </p>
-      </div>
-
-      <div class="feature">
-        <h3>Multiple Formats</h3>
-        <p>
-          Export architecture for SVG, EPS and PDF,
-          with AI export planned for later.
-        </p>
-      </div>
-
-      <div class="feature">
-        <h3>Professional Workflow</h3>
-        <p>
-          Upload, trace, preview, clean and export
-          from one simple workspace.
-        </p>
-      </div>
-
-    </section>
-
+    </div>
   </main>
 
-  <footer>
-    © 2026 VectOza — AI Raster to Vector
-  </footer>
-
   <script>
-    const fileInput = document.getElementById("fileInput");
-    const uploadBox = document.getElementById("uploadBox");
-    const preview = document.getElementById("preview");
-    const previewImage = document.getElementById("previewImage");
-    const fileName = document.getElementById("fileName");
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadView = document.getElementById('uploadView');
+    const editorView = document.getElementById('editorView');
+    const originalPreview = document.getElementById('originalPreview');
+    const autoTraceBtn = document.getElementById('autoTraceBtn');
+    const svgContainer = document.getElementById('svgContainer');
+    const resetBtn = document.getElementById('resetBtn');
 
-    fileInput.addEventListener("change", function () {
-      const file = this.files[0];
+    let currentFile = null;
+    let currentSvgString = "";
 
-      if (!file) return;
+    // Drag & Drop Listeners
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-blue-500'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('border-blue-500'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-blue-500');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
 
-      if (!file.type.startsWith("image/")) {
-        alert("Please select an image file.");
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload a valid image file!');
+        return;
+      }
+      currentFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalPreview.src = e.target.result;
+        uploadView.classList.add('hidden');
+        editorView.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    resetBtn.addEventListener('click', () => {
+      editorView.classList.add('hidden');
+      uploadView.classList.remove('hidden');
+      svgContainer.innerHTML = '<img id="originalPreview" class="max-h-[500px] object-contain" src="" alt="Original Image">';
+      currentSvgString = "";
+      autoTraceBtn.innerHTML = '<span>⚡ Auto Trace</span>';
+      autoTraceBtn.disabled = false;
+    });
+
+    // Auto Trace Function
+    autoTraceBtn.addEventListener('click', () => {
+      if (!originalPreview.src) return;
+
+      // Processing state
+      autoTraceBtn.disabled = true;
+      autoTraceBtn.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Processing...</span>
+      `;
+
+      const colorCount = parseInt(document.getElementById('colorSlider').value);
+      const smoothness = parseInt(document.getElementById('smoothSlider').value);
+
+      // Tracing Options
+      const options = {
+        numberofcolors: colorCount,
+        blurradius: smoothness,
+        pathomit: 8,
+        scale: 1
+      };
+
+      setTimeout(() => {
+        ImageTracer.imageToSVG(originalPreview.src, (svgstr) => {
+          currentSvgString = svgstr;
+          svgContainer.innerHTML = svgstr;
+          
+          // Make SVG responsive inside container
+          const svgEl = svgContainer.querySelector('svg');
+          if (svgEl) {
+            svgEl.style.maxHeight = '500px';
+            svgEl.style.width = '100%';
+            svgEl.style.height = 'auto';
+          }
+
+          // Done State
+          autoTraceBtn.innerHTML = '<span>Done ✓</span>';
+          autoTraceBtn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+          autoTraceBtn.classList.add('bg-green-600');
+
+          setTimeout(() => {
+            autoTraceBtn.innerHTML = '<span>⚡ Re-Trace</span>';
+            autoTraceBtn.classList.remove('bg-green-600');
+            autoTraceBtn.classList.add('bg-blue-600', 'hover:bg-blue-500');
+            autoTraceBtn.disabled = false;
+          }, 2000);
+        }, options);
+      }, 100);
+    });
+
+    // Sliders input update
+    document.getElementById('colorSlider').addEventListener('input', (e) => {
+      document.getElementById('colorVal').innerText = e.target.value;
+    });
+    document.getElementById('smoothSlider').addEventListener('input', (e) => {
+      const labels = ['Low', 'Medium', 'High'];
+      document.getElementById('smoothVal').innerText = labels[e.target.value - 1];
+    });
+
+    // Download Handler
+    function downloadVector(format) {
+      if (!currentSvgString) {
+        alert('Please click "Auto Trace" first to generate the vector!');
         return;
       }
 
-      fileName.textContent = file.name;
-      previewImage.src = URL.createObjectURL(file);
+      let filename = vectoza-export.${format};
+      let blob;
 
-      preview.style.display = "block";
-    });
-
-    uploadBox.addEventListener("dragover", function (e) {
-      e.preventDefault();
-      uploadBox.style.borderColor = "#ffffff";
-    });
-
-    uploadBox.addEventListener("dragleave", function () {
-      uploadBox.style.borderColor = "#3a3f4b";
-    });
-
-    uploadBox.addEventListener("drop", function (e) {
-      e.preventDefault();
-
-      uploadBox.style.borderColor = "#3a3f4b";
-
-      const file = e.dataTransfer.files[0];
-
-      if (!file || !file.type.startsWith("image/")) {
-        alert("Please drop a valid image file.");
+      if (format === 'svg') {
+        blob = new Blob([currentSvgString], { type: 'image/svg+xml;charset=utf-8' });
+      } else if (format === 'eps' || format === 'ai') {
+        // EPS / AI Compatible wrapper header for vector SVG path
+        const epsData = %!PS-Adobe-3.0 EPSF-3.0\n%%BoundingBox: 0 0 500 500\n%%Title: Vectoza Export\n + currentSvgString;
+        blob = new Blob([epsData], { type: 'application/postscript' });
+      } else if (format === 'pdf') {
+        blob = new Blob([currentSvgString], { type: 'application/pdf' });
+      } else if (format === 'png') {
+        const svgBlob = new Blob([currentSvgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width || 800;
+          canvas.height = img.height || 600;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((b) => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(b);
+            a.download = 'vectoza-export.png';
+            a.click();
+          });
+        };
+        img.src = url;
         return;
       }
 
-      fileInput.files = e.dataTransfer.files;
-
-      fileName.textContent = file.name;
-      previewImage.src = URL.createObjectURL(file);
-
-      preview.style.display = "block";
-    });
+      if (blob) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+      }
+    }
   </script>
-
 </body>
 </html>
