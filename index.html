@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VectOza — Raster to Vector Converter</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0b0d12;
+      color: #ffffff;
+    }
+
+    .navbar {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      border-bottom: 1px solid #20232b;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid #30343e;
+      border-radius: 20px;
+      color: #b8becb;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 90px 20px 50px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.05;
+      margin-bottom: 22px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      color: #aeb5c2;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .upload-box {
+      max-width: 800px;
+      margin: 50px auto 0;
+      border: 2px dashed #3a3f4b;
+      border-radius: 24px;
+      padding: 65px 25px;
+      background: #11141b;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .upload-box:hover {
+      border-color: #7e8797;
+      background: #151922;
+    }
+
+    .upload-icon {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+
+    .upload-box h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .upload-box p {
+      color: #8f97a5;
+      margin-bottom: 24px;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      padding: 13px 22px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .formats {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #777f8d;
+    }
+
+    .features {
+      max-width: 1100px;
+      margin: 40px auto 80px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      background: #11141b;
+      border: 1px solid #20242d;
+      border-radius: 18px;
+      padding: 28px;
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      color: #8f97a5;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .preview {
+      display: none;
+      max-width: 800px;
+      margin: 30px auto 0;
+      background: #11141b;
+      border: 1px solid #252a34;
+      border-radius: 20px;
+      padding: 25px;
+    }
+
+    .preview img {
+      display: block;
+      max-width: 100%;
+      max-height: 450px;
+      margin: 20px auto;
+      border-radius: 12px;
+    }
+
+    .file-name {
+      text-align: center;
+      color: #b8becb;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      border-top: 1px solid #20232b;
+      padding: 30px 20px;
+      text-align: center;
+      color: #707887;
+      font-size: 13px;
+    }
+
+    @media (max-width: 750px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        padding: 0 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="logo">VectOza</div>
+    <div class="badge">AI Raster → Vector</div>
+  </nav>
+
+  <main>
+
+    <section class="hero">
+      <h1>Turn Raster Images<br>Into Clean Vectors.</h1>
+
+      <p>
+        Convert JPG, PNG and other raster images into
+        scalable, editable vector artwork.
+      </p>
+
+      <div
+        class="upload-box"
+        id="uploadBox"
+        onclick="document.getElementById('fileInput').click()"
+      >
+        <div class="upload-icon">⬆️</div>
+
+        <h2>Drop your image here</h2>
+
+        <p>
+          or click to browse from your computer
+        </p>
+
+        <div class="upload-btn">
+          Choose Image
+        </div>
+
+        <div class="formats">
+          JPG • PNG • WEBP
+        </div>
+
+        <input
+          type="file"
+          id="fileInput"
+          accept="image/png,image/jpeg,image/webp"
+        >
+      </div>
+
+      <div class="preview" id="preview">
+        <div class="file-name" id="fileName"></div>
+        <img id="previewImage" alt="Uploaded preview">
+      </div>
+
+    </section>
+
+    <section class="features">
+
+      <div class="feature">
+        <h3>Clean Vector Paths</h3>
+        <p>
+          Designed for smooth curves, reduced anchor points
+          and editable vector artwork.
+        </p>
+      </div>
+
+      <div class="feature">
+        <h3>Multiple Formats</h3>
+        <p>
+          Export architecture for SVG, EPS and PDF,
+          with AI export planned for later.
+        </p>
+      </div>
+
+      <div class="feature">
+        <h3>Professional Workflow</h3>
+        <p>
+          Upload, trace, preview, clean and export
+          from one simple workspace.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 VectOza — AI Raster to Vector
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const uploadBox = document.getElementById("uploadBox");
+    const preview = document.getElementById("preview");
+    const previewImage = document.getElementById("previewImage");
+    const fileName = document.getElementById("fileName");
+
+    fileInput.addEventListener("change", function () {
+      const file = this.files[0];
+
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        return;
+      }
+
+      fileName.textContent = file.name;
+      previewImage.src = URL.createObjectURL(file);
+
+      preview.style.display = "block";
+    });
+
+    uploadBox.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      uploadBox.style.borderColor = "#ffffff";
+    });
+
+    uploadBox.addEventListener("dragleave", function () {
+      uploadBox.style.borderColor = "#3a3f4b";
+    });
+
+    uploadBox.addEventListener("drop", function (e) {
+      e.preventDefault();
+
+      uploadBox.style.borderColor = "#3a3f4b";
+
+      const file = e.dataTransfer.files[0];
+
+      if (!file || !file.type.startsWith("image/")) {
+        alert("Please drop a valid image file.");
+        return;
+      }
+
+      fileInput.files = e.dataTransfer.files;
+
+      fileName.textContent = file.name;
+      previewImage.src = URL.createObjectURL(file);
+
+      preview.style.display = "block";
+    });
+  </script>
+
+</body>
+</html>
